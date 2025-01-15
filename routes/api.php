@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
@@ -16,6 +17,18 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+
+Route::middleware(['auth:sanctum'])->group(function() {
+    Route::get('logout', [AuthController::class, 'logout']);
+});
+
 Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');
 Route::get('/productos/{id}', [ProductoController::class, 'show'])->name('productos.show');
 Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
@@ -39,7 +52,3 @@ Route::get('/clientes/{id}', [EmpleadoController::class, 'show'])->name('cliente
 Route::post('/clientes', [EmpleadoController::class, 'store'])->name('clientes.store');
 Route::put('/clientes/{id}', [EmpleadoController::class, 'update'])->name('clientes.update');
 Route::delete('/clientes/{id}', [EmpleadoController::class, 'destroy'])->name('clientes.destroy');
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
